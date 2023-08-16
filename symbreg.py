@@ -2,11 +2,11 @@ from gplearn.genetic import SymbolicRegressor
 
 
 def symbolic_regression(df, target, features=None):
-    y = df[target]
+    y = df[target] # 
     if features is None:
         x = df.drop(columns=[target])
     else:
-        x = df[features]
+        x = df[features] #Inputs
 
     est = SymbolicRegressor(
         population_size=5000,  # n
@@ -24,4 +24,33 @@ def symbolic_regression(df, target, features=None):
     )
     est.fit(x, y)
 
-    return est._program
+    return str(est._program)
+
+
+def format_expression(expr):
+    replacements = {
+        'add': '+',
+        'sub': '-',
+        'mul': '×',
+        'div': '÷',
+        'sqrt': '√',
+        # add more
+    }
+
+    for key, value in replacements.items():
+        expr = expr.replace(key, value)
+
+    return expr
+
+
+if __name__ == "__main__":
+    import numpy as np
+    import pandas as pd
+    import random
+
+    x = np.arange(1, 50)
+    y = np.empty(len(x))
+    for i in range(0, len(x)):
+        y[i] = 1 / (np.cos(i) + 1)
+    df = pd.DataFrame({'x': x, 'y': y})
+    res = symbolic_regression(df, target='y')
