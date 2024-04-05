@@ -3,11 +3,15 @@ from pysr import PySRRegressor
 estpySR = PySRRegressor(
     niterations=1000,
     binary_operators=["+", "-", "*", "/", '^'],
-    unary_operators=["sin", "cos", "exp", "log", "abs", 'sqrt', 'square', 'cube', 'exp', 'abs', 'sinh'],
+    unary_operators=["sin", 'cos', "exp", "log", "abs", 'sqrt', 'square', 'cube', 'exp', 'abs', 'sinh'],
     progress=True,
+    populations=12,
     precision=64,
     extra_sympy_mappings={'inv': lambda x: 1 / x},
-    constraints={'^': (-1, 1)}
+    constraints={'^': (9, 1)},
+    nested_constraints={"sin": {"sin": 0, "cos": 0}, "cos": {"sin": 0, "cos": 0}},
+    weight_optimize=0.001,
+    maxsize=30
 )
 
 
@@ -40,5 +44,4 @@ if __name__ == "__main__":
 
     df = pd.DataFrame({'x': x.ravel(), 'y': y.ravel()})
     result = symbolic_regression(df, target='y')
-    print(result)
-    result[:, 11]
+    print(result.equations_)
